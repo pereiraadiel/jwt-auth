@@ -6,3 +6,5 @@ node_modules/
 ormconfig.json
 jwtRS256.key
 jwtRS256.key.pub
+private-key.pem
+public-key.pem

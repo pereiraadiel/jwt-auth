@@ -53,7 +53,8 @@ export default {
       const usersRepository = getRepository(User);
       const user = usersRepository.create(data);
 
-      const jwtoken = token.sign({ id: user.id });
+      const accessToken = token.sign({ id: user.id });
+      const refreshToken = token.signRefreshToken({ id: user.id });
 
       //registrar login
       user.lastLogin = new Date(Date.now());
@@ -64,7 +65,8 @@ export default {
       return res.status(201).json({
         // user: userView.render(user),
         id: user.id,
-        token: jwtoken,
+        accessToken,
+        refreshToken
       });
     } catch (err) {
       if (err instanceof QueryFailedError) {
@@ -97,7 +99,8 @@ export default {
           });
         }
 
-        const jwtoken = token.sign({ id: user.id });
+        const accessToken = token.sign({ id: user.id });
+        const refreshToken = token.signRefreshToken({ id: user.id });
 
         //registrar login
         user.lastLogin = new Date(Date.now());
@@ -109,7 +112,8 @@ export default {
 
         return res.status(200).json({
           id: user.id,
-          token: jwtoken,
+          accessToken,
+          refreshToken,
         });
       }
 

@@ -9,7 +9,8 @@
     "build": "NODE_ENV=production tsc --target es2017 --experimentalDecorators --emitDecoratorMetadata",
     "start": "PROD=true node dist/server.js",
     "dev": "NODE_ENV=dev ts-node-dev --transpile-only --ignore-watch node_modules src/server.ts",
-    "typeorm": "mv ormconfig.js .ormconfig.js && mv .ormconfig.json ormconfig.json && ts-node-dev ./node_modules/typeorm/cli.js",
+    "pretypeorm": "mv ormconfig.js .ormconfig.js && mv .ormconfig.json ormconfig.json",
+    "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js",
     "posttypeorm": "mv .ormconfig.js ormconfig.js && mv ormconfig.json .ormconfig.json"
   },
   "devDependencies": {

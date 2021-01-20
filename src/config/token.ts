@@ -17,6 +17,17 @@ const sign = (payload: any) => {
   )
 };
 
+const signRefreshToken = (payload: any) => {
+  return jwt.sign(
+    payload,
+    environment.JWT.REFRESH_PRIVATE_KEY as string,
+    { // signOptions
+      algorithm: 'RS256',
+      expiresIn: environment.JWT.REFRESH_DURATION
+    }
+  )
+};
+
 const verify = (token: string) => new Promise((resolve, reject) => {
   return jwt.verify(
     token,
@@ -25,7 +36,17 @@ const verify = (token: string) => new Promise((resolve, reject) => {
   )
 });
 
+const verifyRefreshToken = (token: string) => new Promise((resolve, reject) => {
+  return jwt.verify(
+    token,
+    environment.JWT.REFRESH_PUBLIC_KEY as string,
+    (error, data) => error ? reject(error): resolve(data),
+  )
+});
+
 export default {
   sign,
-  verify
+  verify,
+  signRefreshToken,
+  verifyRefreshToken
 }
