@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "commit": "git add . && git commit -m",
-    "push": "git push -u origin master",
+    "push": "git push -u origin main",
     "build": "NODE_ENV=production tsc --target es2017 --experimentalDecorators --emitDecoratorMetadata",
     "start": "PROD=true node dist/server.js",
     "dev": "NODE_ENV=dev ts-node-dev --transpile-only --ignore-watch node_modules src/server.ts",
