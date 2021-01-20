@@ -14,7 +14,7 @@ const sign = (payload: any) => {
       algorithm: 'RS256',
       expiresIn: environment.JWT.DURATION
     }
-  )
+  );
 };
 
 const signRefreshToken = (payload: any) => {
@@ -25,7 +25,7 @@ const signRefreshToken = (payload: any) => {
       algorithm: 'RS256',
       expiresIn: environment.JWT.REFRESH_DURATION
     }
-  )
+  );
 };
 
 const verify = (token: string) => new Promise((resolve, reject) => {
@@ -33,7 +33,7 @@ const verify = (token: string) => new Promise((resolve, reject) => {
     token,
     environment.JWT.PUBLIC_KEY as string,
     (error, data) => error ? reject(error): resolve(data),
-  )
+  );
 });
 
 const verifyRefreshToken = (token: string) => new Promise((resolve, reject) => {
@@ -41,7 +41,7 @@ const verifyRefreshToken = (token: string) => new Promise((resolve, reject) => {
     token,
     environment.JWT.REFRESH_PUBLIC_KEY as string,
     (error, data) => error ? reject(error): resolve(data),
-  )
+  );
 });
 
 export default {

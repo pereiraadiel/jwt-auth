@@ -19,6 +19,10 @@ declare global {
   }
 }
 
+interface tokenResponse {
+  id: string,
+}
+
 export default {
   // REGISTER USER
   async create(req: Request, res: Response) {
@@ -122,6 +126,31 @@ export default {
       });
     } catch (err) {
       return res.status(400).json(err);
+    }
+  },
+
+  // Refresh Token
+  async refresh_token(req: Request, res: Response) {
+    try {
+      
+      const { refreshToken } = req.body;
+      if(!refreshToken) throw new Error("Bad Request");
+      
+      const user = await token.verifyRefreshToken(refreshToken) as tokenResponse;
+      
+      if(!user) throw new Error("Bad Request");
+      const accessToken = token.sign({ id: user.id });
+      const newRefreshToken = token.sign({ id: user.id });
+      
+      res.status(200).json({
+        accessToken,
+        refreshToken: newRefreshToken
+      });
+
+    } catch (error) {
+      res.status(400).json({
+        error: `Failed to refresh token: ${error}`
+      });
     }
   },
 
