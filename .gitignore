@@ -1,0 +1,8 @@
+node_modules/
+.env
+.env.dev
+.env.production
+.ormconfig.json
+ormconfig.json
+jwtRS256.key
+jwtRS256.key.pub
