@@ -166,13 +166,17 @@ export default {
     const user = await usersRepository.findOneOrFail({
       where: { email: email },
     });
+    if(!user) {
+      res.status(200).json({
+        error: "If the email address is correct, a reset link has been sent to it"
+      });
+    }
 
     const resetToken = token.signResetToken({id: user.id});
-    usersRepository.save(user);
-
+    
     mail.sendResetToken(email, resetToken);
     res.status(200).json({
-      msg: "Link has been sent to your email address"
+      msg: "If the email address is correct, a reset link has been sent to it"
     });
   },
 

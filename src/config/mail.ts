@@ -13,7 +13,7 @@ const msg = {
 
 // configuração de envio
 const send = async (email:string) => {
-  console.log(msg);
+  // console.log(msg);
   return sendgrid
     .send(msg)
     .then(() => {
