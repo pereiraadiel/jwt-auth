@@ -13,7 +13,9 @@ routes.get("/", (req, res) => {
 // Rotas que nao precisam de autenticacao
 routes.post('/users', UsersController.create);
 routes.post('/users/authenticate', UsersController.authenticate);
-routes.post('/users/authenticate/refresh-token', UsersController.refresh_token);
+routes.put('/users/authenticate/refresh-token', UsersController.refresh_token);
+routes.put('/users/authenticate/forgot-password', UsersController.forgot_password);
+// routes.post('/users/authenticate/reset-password', UsersController.reset_password);
 routes.get('/users/:id', UsersController.show);
 
 // Rotas que precisam de autenticacao

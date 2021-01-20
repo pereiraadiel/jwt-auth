@@ -33,9 +33,6 @@ export default class User {
   })
   lastLogin: Date;
 
-  @Column({ name: "reset_token" })
-  resetToken: string;
-
   @CreateDateColumn({
     name: "created_at",
     type: "timestamptz",

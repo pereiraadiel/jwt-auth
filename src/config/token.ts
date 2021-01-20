@@ -28,6 +28,17 @@ const signRefreshToken = (payload: any) => {
   );
 };
 
+const signResetToken = (payload: any) => {
+  return jwt.sign(
+    payload,
+    environment.JWT.RESET_PRIVATE_KEY as string,
+    { // signOptions
+      algorithm: 'RS256',
+      expiresIn: environment.JWT.RESET_DURATION
+    }
+  );
+};
+
 const verify = (token: string) => new Promise((resolve, reject) => {
   return jwt.verify(
     token,
@@ -44,9 +55,19 @@ const verifyRefreshToken = (token: string) => new Promise((resolve, reject) => {
   );
 });
 
+const verifyResetToken = (token: string) => new Promise((resolve, reject) => {
+  return jwt.verify(
+    token,
+    environment.JWT.RESET_PUBLIC_KEY as string,
+    (error, data) => error ? reject(error): resolve(data),
+  );
+});
+
 export default {
   sign,
   verify,
   signRefreshToken,
-  verifyRefreshToken
+  verifyRefreshToken,
+  signResetToken,
+  verifyResetToken,
 }

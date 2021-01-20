@@ -6,6 +6,7 @@ import userView from "../views/UserView";
 import crypto from "../config/crypto";
 import token from "../config/token";
 import guid from '../config/guid';
+import mail from "../config/mail";
 
 interface UserDeleteResponse {
   affected: number;
@@ -62,9 +63,7 @@ export default {
 
       //registrar login
       user.lastLogin = new Date(Date.now());
-      user.resetToken = ""; // para impedir q o token de recuperacao seja usado \
-      // se o user fizer login
-
+      
       await usersRepository.save(user);
       return res.status(201).json({
         // user: userView.render(user),
@@ -109,9 +108,6 @@ export default {
         //registrar login
         user.lastLogin = new Date(Date.now());
 
-        user.resetToken = ""; // para impedir q o token de recuperacao seja usado \
-        // se o user fizer login
-
         usersRepository.save(user);
 
         return res.status(200).json({
@@ -152,6 +148,32 @@ export default {
         error: `Failed to refresh token: ${error}`
       });
     }
+  },
+
+  // Forgot Password 
+  async forgot_password (req: Request, res: Response) {
+    const { email } = req.body;
+    if(!email) 
+      res.status(400).json({
+        error: "Bad Request"
+      });
+    
+    if(!mail.validateEmail(email)) 
+      res.status(400).json({
+        error: "Email invalid"
+      });
+    const usersRepository = getRepository(User);
+    const user = await usersRepository.findOneOrFail({
+      where: { email: email },
+    });
+
+    const resetToken = token.signResetToken({id: user.id});
+    usersRepository.save(user);
+
+    mail.sendResetToken(email, resetToken);
+    res.status(200).json({
+      msg: "Link has been sent to your email address"
+    });
   },
 
   // UPDATE USER'S PASSWORD ( Require Authentication )
