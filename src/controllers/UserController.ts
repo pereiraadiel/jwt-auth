@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { getRepository, QueryFailedError } from "typeorm";
+import { getRepository, QueryFailedError} from "typeorm";
 import * as Yup from "yup";
 import User from "../models/User";
 import userView from "../views/UserView";
 import crypto from "../config/crypto";
 import token from "../config/token";
-import guid from '../config/guid';
+import guid from "../config/guid";
 import mail from "../config/mail";
 
 interface UserDeleteResponse {
@@ -21,7 +21,7 @@ declare global {
 }
 
 interface tokenResponse {
-  id: string,
+  id: string;
 }
 
 export default {
@@ -63,13 +63,13 @@ export default {
 
       //registrar login
       user.lastLogin = new Date(Date.now());
-      
+
       await usersRepository.save(user);
       return res.status(201).json({
         // user: userView.render(user),
         id: user.id,
         accessToken,
-        refreshToken
+        refreshToken,
       });
     } catch (err) {
       if (err instanceof QueryFailedError) {
@@ -128,56 +128,65 @@ export default {
   // Refresh Token
   async refresh_token(req: Request, res: Response) {
     try {
-      
       const { refreshToken } = req.body;
-      if(!refreshToken) throw new Error("Bad Request");
-      
-      const user = await token.verifyRefreshToken(refreshToken) as tokenResponse;
-      
-      if(!user) throw new Error("Bad Request");
+      if (!refreshToken) throw new Error("Bad Request");
+
+      const user = (await token.verifyRefreshToken(
+        refreshToken
+      )) as tokenResponse;
+
+      if (!user) throw new Error("Bad Request");
       const accessToken = token.sign({ id: user.id });
       const newRefreshToken = token.sign({ id: user.id });
-      
+
       res.status(200).json({
         accessToken,
-        refreshToken: newRefreshToken
+        refreshToken: newRefreshToken,
       });
-
     } catch (error) {
       res.status(400).json({
-        error: `Failed to refresh token: ${error}`
+        error: `Failed to refresh token: ${error}`,
       });
     }
   },
 
-  // Forgot Password 
-  async forgot_password (req: Request, res: Response) {
-    const { email } = req.body;
-    if(!email) 
-      res.status(400).json({
-        error: "Bad Request"
+  // Forgot Password
+  async forgot_password(req: Request, res: Response) {
+    try {
+      const { email } = req.body;
+      if (!email)
+        return res.status(400).json({
+          error: "Bad Request: Email is required",
+        });
+
+      if (!mail.validateEmail(email))
+        return res.status(400).json({
+          error: "Bad Request: Email invalid",
+        });
+      const usersRepository = getRepository(User);
+      const user = await usersRepository.findOne({
+        where: { email: email },
       });
-    
-    if(!mail.validateEmail(email)) 
-      res.status(400).json({
-        error: "Email invalid"
-      });
-    const usersRepository = getRepository(User);
-    const user = await usersRepository.findOneOrFail({
-      where: { email: email },
-    });
-    if(!user) {
+      if (!user) {
+        return res.status(200).json({
+          error:
+            "If the email address is correct, a reset link has been sent to it",
+        });
+      }
+
+      const resetToken = token.signResetToken({ id: user.id });
+
+      mail.sendResetToken(email, resetToken);
       res.status(200).json({
-        error: "If the email address is correct, a reset link has been sent to it"
+        msg:
+          "If the email address is correct, a reset link has been sent to it",
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(400).json({
+        msg: "Failed to generate a reset token",
       });
     }
-
-    const resetToken = token.signResetToken({id: user.id});
-    
-    mail.sendResetToken(email, resetToken);
-    res.status(200).json({
-      msg: "If the email address is correct, a reset link has been sent to it"
-    });
   },
 
   // UPDATE USER'S PASSWORD ( Require Authentication )
