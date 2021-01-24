@@ -6,14 +6,16 @@ import Home from './pages/Home';
 
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ResetPassword from './pages/ResetPassword';
 
 const Routes = () => {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path="/" exact component={Home}/>
+        <PrivateRoute path="/" exact component={Home}/>
         <Route path="/login" exact component={Login}/>
         <Route path="/forgot-password" exact component={ForgotPassword}/>
+        <Route path="/reset-password" exact component={ResetPassword}/>
         <Route path="/create-account" exact component={Register}/>
       </Switch>
     </BrowserRouter>
