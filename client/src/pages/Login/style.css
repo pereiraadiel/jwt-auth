@@ -1,4 +1,4 @@
-.App {
+.login-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -10,7 +10,7 @@
   /* border: 1px solid #fff; */
 }
 
-.App h1 {
+.login-container h1 {
   font-size: 64px;
   font-family: Arimo;
   font-weight: bold;
