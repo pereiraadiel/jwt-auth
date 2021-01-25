@@ -97,7 +97,7 @@ const Home = () => {
         onChange={handleChangeUserDesc}
       />
       <Button className="button" onClick={handleSubmit}>Salvar alterações</Button>
-      <Link to="/login" className="red">fazer logout</Link>
+      <Link to="/logout" className="red">fazer logout</Link>
     </div>
   );
 }

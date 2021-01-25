@@ -61,10 +61,17 @@ const saveUser = (user: User) => {
   });
 }
 
+const logout = () => {
+  localStorage.removeItem("jwtAuth-user-id");
+  localStorage.removeItem("jwtAuth-user-accessToken");
+  localStorage.removeItem("jwtAuth-user-refreshToken");
+}
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   isAuthenticated,
   authenticate,
   getUser,
-  saveUser
+  saveUser,
+  logout,
 }
