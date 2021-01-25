@@ -11,6 +11,7 @@ const Login = () => {
     const value = event.target.value;
     setEmail(value);
   }
+  
   function handlePasswordChange(event: ChangeEvent<HTMLInputElement>){
     const value = event.target.value;
     setPassword(value);

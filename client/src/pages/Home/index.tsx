@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { Button, Input} from 'reakit';
 import auth from '../../services/auth';
@@ -13,6 +13,43 @@ interface User {
 const Home = () => {
   const history = useHistory();
   const [user, setUser] = useState<User>()
+
+  function handleChangeUserName(event: ChangeEvent<HTMLInputElement>){
+    const value = event.target.value;
+    const newUser = user;
+    if(!newUser) return;
+    newUser.name = value;
+    setUser(newUser);
+  }
+
+  function handleChangeUserPhotoUrl(event: ChangeEvent<HTMLInputElement>){
+    const value = event.target.value;
+    const newUser = user;
+    if(!newUser) return;
+    newUser.photoUrl = value;
+    setUser(newUser);
+  }
+
+  function handleChangeUserDesc(event: ChangeEvent<HTMLInputElement>){
+    const value = event.target.value;
+    const newUser = user;
+    if(!newUser) return;
+    newUser.description = value;
+    setUser(newUser);
+  }
+
+  function handleSubmit () {
+    if(!user) return;
+    auth.saveUser(user)
+      .then( (response: any) => {
+        setUser(response);
+      })
+      .catch( (err: any) => {
+        console.error(err);
+        return;
+      });
+  }
+  
   useEffect( () => {
     auth.getUser().then((data: any) => {
       setUser(data);
@@ -20,7 +57,9 @@ const Home = () => {
       console.error(err);
       history.goBack();
     });
-  }, []); 
+  }, [history]); 
+
+
   
   if(!user) {
     return (
@@ -30,8 +69,6 @@ const Home = () => {
     );
   }
     
-      
-  console.log("USUARIO>:>:>",user);
   return (
     <div className="container">
       <h1>JWT Auth</h1>
@@ -42,6 +79,7 @@ const Home = () => {
         type="text"
         defaultValue={user?.name}
         required
+        onChange={handleChangeUserName}
       />
       <Input 
         className="input" 
@@ -49,14 +87,16 @@ const Home = () => {
         type="url"
         defaultValue={user?.photoUrl}
         required
+        onChange={handleChangeUserPhotoUrl}
       />
-      <textarea 
+      <Input 
         className="input" 
         placeholder="Bio"
         defaultValue={user?.description}
         required
+        onChange={handleChangeUserDesc}
       />
-      <Button className="button" >Salvar alterações</Button>
+      <Button className="button" onClick={handleSubmit}>Salvar alterações</Button>
       <Link to="/login" className="red">fazer logout</Link>
     </div>
   );

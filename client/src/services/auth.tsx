@@ -1,10 +1,11 @@
 import api from './api';
 
-// interface jwtAuthUser {
-//   id: string,
-//   accessToken: string,
-//   refreshToken: string,
-// }
+interface User {
+  id: string,
+  name: string,
+  description: string,
+  photoUrl: string,
+}
 
 const isAuthenticated = () => {
   const token = localStorage.getItem('jwtAuth-user-accessToken');
@@ -32,20 +33,8 @@ const authenticate = (email: string, password: string) => {
 
 const getUser = () => {
   const id = localStorage.getItem("jwtAuth-user-id")?.replaceAll("\"", '');
-  const accessToken = localStorage.getItem("jwtAuth-user-accessToken")?.replaceAll("\"", '');
-  const refreshToken = localStorage.getItem("jwtAuth-user-refreshToken")?.replaceAll("\"", '');
   
-  const jwtAuth_user = {
-    id,
-    accessToken,
-    refreshToken
-  }
-
-  if(!jwtAuth_user) return {};
-
-  console.log(jwtAuth_user);
-  
-  return api.get(`/users/${jwtAuth_user.id}`)
+  return api.get(`/users/${id}`)
     .then((response: any) => {
       // console.log(response.data);
       return response.data;
@@ -54,9 +43,28 @@ const getUser = () => {
     });
 }
 
+const saveUser = (user: User) => {
+  const id = localStorage.getItem("jwtAuth-user-id")?.replaceAll("\"", '');
+  const accessToken = localStorage.getItem("jwtAuth-user-accessToken")?.replaceAll("\"", '');
+
+  return api.put(`/users/update/${id}`, user ,{
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`
+    }
+  })
+  .then( (response: any) => {
+    return response.data;
+  }).catch((err: any) => {
+    console.error(err);
+    return {};
+  });
+}
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   isAuthenticated,
   authenticate,
-  getUser
+  getUser,
+  saveUser
 }
