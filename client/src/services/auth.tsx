@@ -1,12 +1,12 @@
 import api from './api';
 
-export const  isAuthenticated = () => {
-  const token = localStorage.getItem('sessionToken');
+const isAuthenticated = () => {
+  const token = localStorage.getItem('jwtAuth-user');
   if(token) return true;
   return false;
 }
 
-export const authenticate = (email: string, password: string) => {
+const authenticate = (email: string, password: string) => {
   return api.post("/users/authenticate", {
     email,
     password
@@ -20,4 +20,9 @@ export const authenticate = (email: string, password: string) => {
   .catch((err: any) => {
     return err;
   });
+}
+
+export default {
+  isAuthenticated,
+  authenticate
 }
