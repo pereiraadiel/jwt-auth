@@ -196,7 +196,7 @@ export default {
   async update(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const { description, name } = req.body;
+      const { description, name, photoUrl } = req.body;
       const userId = req.userId;
 
       if (id !== userId) {
@@ -212,6 +212,7 @@ export default {
 
       user.description = description;
       user.name = name;
+      user.photoUrl = photoUrl;
       user.updatedAt = new Date(Date.now());
 
       await usersRepository.save(user);
